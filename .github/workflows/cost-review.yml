@@ -58,7 +58,7 @@ jobs:
           terraform show -json demo.tfplan > tfplan.json
 
       - name: Review cost impact and cheaper candidates
-        uses: s1ntaxe770r/costgraph-pricing-action@0c71ea840cb36608c6066dc01b5a6f7a7b4f231e
+        uses: s1ntaxe770r/costgraph-pricing-action@4339f5aaa7f6d9b78d91363e596b010e660e55d9
         with:
           api-key: ${{ secrets.COSTGRAPH_API_KEY }}
           base-plan-path: base/tfplan.json

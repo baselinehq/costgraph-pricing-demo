@@ -1,0 +1,67 @@
+name: CostGraph PR cost review
+on:
+  pull_request:
+    paths:
+      - '*.tf'
+      - '*.tfvars'
+      - .terraform.lock.hcl
+      - .github/workflows/cost-review.yml
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: costgraph-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+          persist-credentials: false
+
+      - name: Checkout proposed change
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: proposed
+          persist-credentials: false
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.13.0
+          terraform_wrapper: false
+
+      - name: Plan base branch
+        working-directory: base
+        run: |
+          terraform init -input=false
+          terraform plan -input=false -refresh=false -out=demo.tfplan
+          terraform show -json demo.tfplan > tfplan.json
+
+      - name: Plan proposed change
+        working-directory: proposed
+        run: |
+          terraform init -input=false
+          terraform plan -input=false -refresh=false -out=demo.tfplan
+          terraform show -json demo.tfplan > tfplan.json
+
+      - name: Review cost impact and cheaper candidates
+        uses: s1ntaxe770r/costgraph-pricing-action@0c71ea840cb36608c6066dc01b5a6f7a7b4f231e
+        with:
+          api-key: ${{ secrets.COSTGRAPH_API_KEY }}
+          base-plan-path: base/tfplan.json
+          plan-path: proposed/tfplan.json
+          aws-region: us-east-1
+          candidate-instance-types: m6a.2xlarge,m6i.2xlarge,m7a.2xlarge

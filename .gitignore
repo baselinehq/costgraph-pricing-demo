@@ -1,0 +1,6 @@
+.terraform/
+*.tfplan
+tfplan.json
+*.tfstate*
+.env
+.DS_Store

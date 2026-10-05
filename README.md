@@ -21,7 +21,7 @@ GitHub's built-in token writes the PR comment; it is separate from the CostGraph
 
 The workflow checks out the PR's base and head commits, generates a Terraform
 JSON plan for each, and passes both to the standalone
-[CostGraph pricing action](https://github.com/s1ntaxe770r/costgraph-pricing-action).
+[CostGraph pricing action](https://github.com/baselinehq/costgraph-pricing-action).
 Comparing planned inventories shows the difference between the branches without
 deploying either one. Re-running updates the existing comment.
 

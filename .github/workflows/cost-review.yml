@@ -58,10 +58,7 @@ jobs:
           terraform show -json demo.tfplan > tfplan.json
 
       - name: Review cost impact and cheaper candidates
-        uses: baselinehq/costgraph-pricing-action@4339f5aaa7f6d9b78d91363e596b010e660e55d9
+        uses: baselinehq/costgraph-action/terraform-cost@v0.0.1
         with:
           api-key: ${{ secrets.COSTGRAPH_API_KEY }}
-          base-plan-path: base/tfplan.json
           plan-path: proposed/tfplan.json
-          aws-region: us-east-1
-          candidate-instance-types: m6a.2xlarge,m6i.2xlarge,m7a.2xlarge

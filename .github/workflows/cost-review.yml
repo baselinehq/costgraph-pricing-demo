@@ -61,4 +61,6 @@ jobs:
         uses: baselinehq/costgraph-action/terraform-cost@v0.0.4
         with:
           api-key: ${{ secrets.COSTGRAPH_API_KEY }}
-          plan-path: proposed/tfplan.json
+          plan-path: |
+            proposed/tfplan.json
+            base/tfplan.json

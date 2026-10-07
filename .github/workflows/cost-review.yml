@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - '*.tf'
+      - .github/workflows/cost-review.yml
       - '*.tfvars'
       - .terraform.lock.hcl
       - .github/workflows/cost-review.yml
